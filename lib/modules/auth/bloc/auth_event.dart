@@ -13,6 +13,7 @@ sealed class AuthEvent with _$AuthEvent{
     DateTime? dob,
     String? gender,
     String? password,
+    String? profilePath,
 }) = _SetSignUpTextEvent;
 
   const factory AuthEvent.loginEvent() = _LoginEvent;

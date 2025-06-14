@@ -48,5 +48,15 @@ class PostModel extends HiveObject {
 
   int get likeCount => likes.length;
 
-  int get commentCount => comments.length;
+  int get commentCount => countAllComments(comments);
+
+  int countAllComments(List<CommentModel> list) {
+    int count = 0;
+    for (final c in list) {
+      count++;
+      count += countAllComments(c.replies);
+    }
+    return count;
+  }
+
 }

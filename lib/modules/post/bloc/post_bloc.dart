@@ -24,6 +24,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<_SelectMediaEvent>(_onSelectMediaEvent);
     on<_ToggleLikeEvent>(_onToggleLikeEvent);
     on<_AddCommentEvent>(_onAddCommentEvent);
+    on<_ClearStoreEvent>(_onClearStoreEvent);
+    on<_ReplyToCommentEvent>(_onReplyToCommentEvent);
   }
 
   Future<void> _onSetPostTextEvent(
@@ -207,30 +209,43 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     emit(PostState.general(store: state.store.copyWith(isLoading: true)));
 
     try {
-      final id = Uuid().v4();
+      final id = const Uuid().v4();
       final comment = CommentModel(id: id, userId: getStringAsync(AppConstant.userId), text: event.comment, createdAt: DateTime.now(), replies: []);
-      if(event.replyingToId != null){
-        PostDb.addComment(event.postId, comment,parentCommentId: event.replyingToId);
-      }else{
-      PostDb.addComment(event.postId, comment,);}
-    //   if(event.isLiked){
-    //   PostDb.addLike(event.postId, getStringAsync(AppConstant.userId));}else{
-    //     PostDb.removeLike(event.postId, getStringAsync(AppConstant.userId));
-    //   }
-    //
-    //   emit(PostState.likeToggled(store: state.store.copyWith(isLoading: false,postList: PostDb.getAllPosts()),id: event.postId));
+        PostDb.addComment(event.postId, comment,parentCommentId: state.store.replyingToCommentId);
+      emit(PostState.commentAdded(store: state.store.copyWith(isLoading: false,postList: PostDb.getAllPosts()),));
     } catch (e) {
       emit(PostState.postError(store: state.store.copyWith(isLoading: false),error: 'Something went wrong. Please try later.'));
     }
   }
 
+  void _onClearStoreEvent(
+      _ClearStoreEvent event,
+      Emitter<PostState> emit,
+      ) async {
+    emit(PostState.general(store: state.store.copyWith(
+      title: '',
+      body: '',
+      selectedMedia: [],
+    )));
+  }
+
+  void _onReplyToCommentEvent(
+      _ReplyToCommentEvent event,
+      Emitter<PostState> emit,
+      ) async {
+    emit(PostState.general(store: state.store.copyWith(
+        replyingToCommentId:event.id,
+      replyingToUser:event.userName,
+    )));
+  }
+
 
   // Exposed functions
-  void createPostEvent() => add(PostEvent.createPostEvent());
-  void fetchPostsEvent() => add(PostEvent.fetchPostsEvent());
+  void createPostEvent() => add(const PostEvent.createPostEvent());
+  void fetchPostsEvent() => add(const PostEvent.fetchPostsEvent());
   void deletePostEvent(String postId) => add(PostEvent.deletePostEvent(postId: postId));
-  void clearStoreEvent() => add(PostEvent.clearStoreEvent());
-  void selectMediaEvent() => add(PostEvent.selectMediaEvent());
+  void clearStoreEvent() => add(const PostEvent.clearStoreEvent());
+  void selectMediaEvent() => add(const PostEvent.selectMediaEvent());
   void addCommentEvent({required String comment,required String postId, String? replyingToId}) => add(PostEvent.addCommentEvent(comment: comment,postId: postId,replyingToId: replyingToId));
   void toggleLikeEvent({
     required bool isLiked,
@@ -250,4 +265,5 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }) {
     add(PostEvent.setPostTextEvent(title: title, body: body, media: media));
   }
+  void replyToCommentEvent(String? id,String? userName,) => add(PostEvent.replyToCommentEvent(id,userName));
 }

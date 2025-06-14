@@ -24,6 +24,10 @@ sealed class PostState with _$PostState {
     required String message,
   }) = PostDeleted;
 
+  const factory PostState.commentAdded({
+    required PostStore store,
+  }) = CommentAdded;
+
   const factory PostState.postError({
     required PostStore store,
     required String error,

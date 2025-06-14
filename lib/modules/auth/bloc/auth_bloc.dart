@@ -14,7 +14,7 @@ part 'auth_store.dart';
 part 'auth_bloc.freezed.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthState.initial(store: AuthStore())) {
+  AuthBloc() : super(const AuthState.initial(store: AuthStore())) {
     on<_SetLoginTextEvent>(_onSetLoginTextEvent);
     on<_SetSignUpTextEvent>(_onSetSignUpTextEvent);
     on<_LoginEvent>(_onLoginEvent);
@@ -48,6 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           signUpGender: event.gender ?? state.store.signUpGender,
           signUpName: event.name ?? state.store.signUpName,
           signUpPassword: event.password ?? state.store.signUpPassword,
+          signUpProfilePath: event.profilePath ?? state.store.signUpProfilePath,
         ),
       ),
     );
@@ -86,7 +87,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       debugPrint(e.toString());
       emit(
         AuthState.authError(
-          store: state.store,
+          store: state.store.copyWith(isLoading: false),
           error: 'Something went wrong. Please try later.',
         ),
       );
@@ -103,12 +104,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (UserDb.userExists(store.signUpEmail)) {
         emit(
           AuthState.authError(
-            store: store,
+            store: store.copyWith(isLoading: false),
             error: 'This email is already registered.',
           ),
         );
       } else {
-        final id = Uuid().v4();
+        final id = const Uuid().v4();
         final user = UserModel(
           id: id,
           name: store.signUpName,
@@ -116,6 +117,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           dob: store.signUpDob ?? DateTime(2000, 1, 1),
           email: store.signUpEmail,
           hashPassword: hashPassword(store.signUpPassword),
+          profilePath: store.signUpProfilePath,
         );
         user.save();
         await setLoginStatus(id);
@@ -128,6 +130,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               signUpGender: '',
               signUpEmail: '',
               signUpDob: null,
+              signUpProfilePath: null,
             ),
             message: ' You\'re all set up! Welcome aboard.',
           ),
@@ -137,7 +140,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       debugPrint(e.toString());
       emit(
         AuthState.authError(
-          store: state.store,
+          store: state.store.copyWith(isLoading: false),
           error: 'Something went wrong. Please try later',
         ),
       );
@@ -159,15 +162,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void loginEvent() {
-    add(AuthEvent.loginEvent());
+    add(const AuthEvent.loginEvent());
   }
 
   void signUpEvent() {
-    add(AuthEvent.signUpEvent());
+    add(const AuthEvent.signUpEvent());
   }
 
   void logoutEvent() {
-    add(AuthEvent.logoutEvent());
+    add(const AuthEvent.logoutEvent());
   }
 
   void setSignUpTextEvent({
@@ -176,6 +179,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     DateTime? dob,
     String? gender,
     String? password,
+    String? profilePath,
   }) {
     add(
       AuthEvent.setSignUpTextEvent(
@@ -184,6 +188,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         dob: dob,
         gender: gender,
         password: password,
+        profilePath: profilePath,
       ),
     );
   }

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -16,82 +19,362 @@ class MainFeedScreen extends StatefulWidget {
   State<MainFeedScreen> createState() => _MainFeedScreenState();
 }
 
-class _MainFeedScreenState extends State<MainFeedScreen> {
+class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStateMixin {
   late final UserModel? currentUser;
+  late AnimationController _fabAnimationController;
+  late Animation<double> _fabAnimation;
+
   @override
   void initState() {
-    currentUser = UserDb.getCurrentUser();
     super.initState();
+    currentUser = UserDb.getCurrentUser();
+
+    _fabAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _fabAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fabAnimationController,
+      curve: Curves.easeInOut,
+    ));
+
+    _fabAnimationController.forward();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: (){context.push(AppRouter.createPost);},child: Icon(Icons.add),),
-      appBar: AppBar(title: Text('Social App'),actions: [
-        PopupMenuButton(
-          icon: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Text(
-              currentUser?.name.substring(0, 1).toUpperCase() ?? 'U',
-              style: const TextStyle(color: Colors.blue),
+  void dispose() {
+    _fabAnimationController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildUserAvatar(ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.primary,
+            theme.colorScheme.primary.withValues(alpha: 0.7),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: CircleAvatar(
+        radius: 18,
+        backgroundColor: Colors.transparent,
+        child: currentUser?.profilePath != null
+            ? ClipOval(
+          child: Image.file(
+            File(currentUser!.profilePath!),
+            width: 36,
+            height: 36,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => _buildDefaultAvatar(theme),
+          ),
+        )
+            : _buildDefaultAvatar(theme),
+      ),
+    );
+  }
+
+  Widget _buildDefaultAvatar(ThemeData theme) {
+    return Text(
+      currentUser?.name.substring(0, 1).toUpperCase() ?? 'U',
+      style: theme.textTheme.titleMedium?.copyWith(
+        color: theme.colorScheme.onPrimary,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(ThemeData theme) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(60),
+            ),
+            child: Icon(
+              Icons.post_add_rounded,
+              size: 48,
+              color: theme.colorScheme.primary.withValues(alpha: 0.7),
             ),
           ),
-          itemBuilder: (context) => <PopupMenuEntry>[
-            PopupMenuItem(
-              enabled: false,
-              child: Text('Hi, ${currentUser?.name.toUpperCase() ?? 'USER'}',style: const TextStyle(color: Colors.black),),
+          const SizedBox(height: 24),
+          Text(
+            'No Posts Yet',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
             ),
-            const PopupMenuDivider(indent: 4,endIndent: 4,),
-            PopupMenuItem(
-              child: const Row(
-                children: [
-                  Icon(Icons.logout,color: Colors.redAccent,),
-                  SizedBox(width: 8),
-                  Text('Sign Out',style: TextStyle(color: Colors.redAccent,),),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Be the first to share something with the community!',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          // const SizedBox(height: 32),
+          // ElevatedButton.icon(
+          //   onPressed: () {
+          //     context.push(AppRouter.createPost);
+          //   },
+          //   icon: const Icon(Icons.add_rounded),
+          //   label: const Text('Create First Post'),
+          //   style: ElevatedButton.styleFrom(
+          //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(12),
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFAB(ThemeData theme) {
+    return ScaleTransition(
+      scale: _fabAnimation,
+      child: FloatingActionButton.extended(
+        onPressed: () {
+          context.push(AppRouter.createPost);
+        },
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
+        elevation: 6,
+        icon: const Icon(Icons.add_rounded, size: 24),
+        label: Text(
+          'Post',
+          style: theme.textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Colors.white
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+    );
+  }
+
+  static const darkStatusBar = SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // or your dark color if needed
+    statusBarIconBrightness: Brightness.light, // Android
+    statusBarBrightness: Brightness.dark, // iOS
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: darkStatusBar,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        floatingActionButton: _buildFAB(theme),
+        appBar: AppBar(
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.primary.withValues(alpha: 0.7),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.chat_bubble_rounded,
+                  color: theme.colorScheme.onPrimary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Social App',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onPrimary,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: PopupMenuButton(
+                icon: _buildUserAvatar(theme),
+                offset: const Offset(0, 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 8,
+                itemBuilder: (context) => <PopupMenuEntry>[
+                  PopupMenuItem(
+                    enabled: false,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        children: [
+                          _buildUserAvatar(theme),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Welcome back!',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  currentUser?.name ?? 'User',
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const PopupMenuDivider(
+                    indent: 16,
+                    endIndent: 16,
+                    height: 1,
+                  ),
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.error.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.logout_rounded,
+                            color: theme.colorScheme.error,
+                            size: 18,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Sign Out',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.error,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      context.read<AuthBloc>().logoutEvent();
+                    },
+                  ),
                 ],
               ),
-              onTap: () {
-                context.read<AuthBloc>().logoutEvent();
-              },
             ),
           ],
         ),
-      ],),
-      body: BlocListener<AuthBloc,AuthState>(listener:(context,state){
-        switch(state){
-          case LogOutSuccess():
-            context.go(AppRouter.login);
-            toast(state.message);
-          default:
-        }
-      },child: RefreshIndicator(
-        onRefresh: () async{
-          context.read<PostBloc>().fetchPostsEvent();
-        },
-        child: SafeArea(child: BlocConsumer<PostBloc,PostState>(
-         listener: (context,state){
-           switch(state){
-             case PostDeleted():
-               ScaffoldMessenger.of(context).showSnackBar(
-                 const SnackBar(content: Text('Post deleted.')),
-               );
-             default:
-           }
-         },
-          builder: (context,state) {
-            return state.store.postList.isEmpty ? Center(child: Text('No post yet.'),) :ListView.builder(
-              itemCount: state.store.postList.length,
-                itemBuilder: (context,index){
-              final post = state.store.postList[index];
-              return PostCard(
-                post: post,
-                isLiked: post.likes.any((like)=>like.userId == UserDb.getCurrentUser()?.id),
-              );
-            });
-          }
-        )),
-      )),
+        body: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            switch (state) {
+              case LogOutSuccess():
+                context.go(AppRouter.login);
+                toast(state.message);
+              default:
+            }
+          },
+          child: RefreshIndicator(
+            onRefresh: () async {
+              context.read<PostBloc>().fetchPostsEvent();
+            },
+            color: theme.colorScheme.primary,
+            backgroundColor: theme.colorScheme.surface,
+            child: SafeArea(
+              child: BlocConsumer<PostBloc, PostState>(
+                listener: (context, state) {
+                  switch (state) {
+                    case PostDeleted():
+                      GoRouter.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle_rounded,
+                                color: theme.colorScheme.onPrimary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text('Post deleted successfully'),
+                            ],
+                          ),
+                          backgroundColor: theme.colorScheme.primary,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          margin: const EdgeInsets.all(16),
+                        ),
+                      );
+                    default:
+                  }
+                },
+                builder: (context, state) {
+                  if (state.store.postList.isEmpty) {
+                    return _buildEmptyState(theme);
+                  }
+
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(top: 8, bottom: 100),
+                    itemCount: state.store.postList.length,
+                    itemBuilder: (context, index) {
+                      final post = state.store.postList[index];
+                      return PostCard(
+                        post: post,
+                        isLiked: post.likes.any(
+                              (like) => like.userId == UserDb.getCurrentUser()?.id,
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

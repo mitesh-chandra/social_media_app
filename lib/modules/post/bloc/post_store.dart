@@ -9,5 +9,7 @@ sealed class PostStore with _$PostStore {
     @Default('') String body,
     @Default([]) List<MediaModel> selectedMedia,
     @Default([]) List<PostModel> postList,
+    @Default(null) String? replyingToCommentId,
+    @Default(null) String? replyingToUser,
   }) = _PostStore;
 }

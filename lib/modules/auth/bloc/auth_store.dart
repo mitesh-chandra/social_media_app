@@ -11,5 +11,6 @@ sealed class AuthStore with _$AuthStore{
   @Default('') String signUpPassword,
   @Default('') String signUpGender,
   @Default(null) DateTime? signUpDob,
+  @Default(null) String? signUpProfilePath,
 })= _AuthStore;
 }

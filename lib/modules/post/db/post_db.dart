@@ -71,7 +71,7 @@ class PostDb {
   }
 
   static void _addReplyToComment(List<CommentModel> comments, String parentId, CommentModel reply) {
-    for (var comment in comments) {
+    for (final comment in comments) {
       if (comment.id == parentId) {
         comment.replies.add(reply);
         return;

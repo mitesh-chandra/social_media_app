@@ -10,6 +10,7 @@ import 'package:social_media_app/modules/post/model/post_model.dart';
 import 'package:social_media_app/modules/post/ui/create_post_screen.dart';
 import 'package:social_media_app/modules/post/ui/post_detail_page.dart';
 import 'package:social_media_app/utils/media_preview.dart';
+import 'package:video_player/video_player.dart';
 
 class AppRouter {
   static const mainFeed = '/';
@@ -26,9 +27,13 @@ class AppRouter {
         path: mainFeed,
         builder: (context, state) => const MainFeedScreen(),
       ),
-      GoRoute(path: login, builder: (context, state) => LoginScreen()),
+      GoRoute(path: login, builder: (context, state) => const LoginScreen()),
       GoRoute(path: signUp, builder: (context, state) => const SignUpScreen()),
-      GoRoute(path: galleryPage, builder: (context, state) => const GalleryScreen()),
+      GoRoute(path: galleryPage, builder: (context, state) {
+        final onlyImage = state.uri.queryParameters.containsKey('onlyImage');
+        final singleSelect = state.uri.queryParameters.containsKey('singleSelect');
+        return GalleryScreen(onlyImage: onlyImage,singleSelect:singleSelect);
+      }),
       GoRoute(path: postDetail, builder: (context, state) {
         final id = state.uri.queryParameters['postId']!;
         return PostDetailScreen(postId: id,);}),
@@ -40,11 +45,11 @@ class AppRouter {
         path: viewMedia,
         builder: (context, state) {
           final index = int.parse(state.uri.queryParameters['index'] ?? '0');
-          final mediaList = state.extra as List<MediaModel>;
+          final mediaList = state.extra as (List<MediaModel>,List<VideoPlayerController?>);
 
           return MediaViewerScreen(
             initialIndex: index,
-            mediaList: mediaList,
+            mediaList: mediaList.$1, vehicleControllers: mediaList.$2,
           );
         },
       ),

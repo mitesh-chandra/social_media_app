@@ -5,7 +5,6 @@ import 'package:social_media_app/core/dependency_injection.dart';
 import 'package:social_media_app/core/route/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:social_media_app/data/hive/hive_service.dart';
 import 'package:social_media_app/modules/auth/bloc/auth_bloc.dart';
 import 'package:social_media_app/modules/post/bloc/post_bloc.dart';
 import 'package:social_media_app/utils/app_bloc_observer.dart';
@@ -31,8 +30,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    // initializeDB();
     setupLocator();
     super.initState();
+  }
+
+  Future<void> initializeDB() async{
+    await DB().init();
   }
   @override
   Widget build(BuildContext context) {

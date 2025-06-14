@@ -33,4 +33,5 @@ sealed class PostEvent with _$PostEvent {
 
   const factory PostEvent.clearStoreEvent() = _ClearStoreEvent;
   const factory PostEvent.selectMediaEvent() = _SelectMediaEvent;
+  const factory PostEvent.replyToCommentEvent(String? id,String? userName) = _ReplyToCommentEvent;
 }

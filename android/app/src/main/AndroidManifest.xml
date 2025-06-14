@@ -11,8 +11,8 @@
 
     <application
         android:name="${applicationName}"
-        android:label="social_media_app"
-        android:icon="@mipmap/ic_launcher"
+        android:label="Social App"
+        android:icon="@mipmap/launcher_icon"
         android:requestLegacyExternalStorage="true">
 
         <activity

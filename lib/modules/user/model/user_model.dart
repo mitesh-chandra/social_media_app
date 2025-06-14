@@ -23,6 +23,9 @@ class UserModel extends HiveObject{
   @HiveField(5)
   final String hashPassword;
 
+  @HiveField(6)
+  final String? profilePath;
+
   UserModel({
     required this.id,
     required this.name,
@@ -30,6 +33,7 @@ class UserModel extends HiveObject{
     required this.dob,
     required this.email,
     required this.hashPassword,
+    this.profilePath,
   });
 
   @override
