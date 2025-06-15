@@ -17,12 +17,9 @@ Future<void> showMessageDialog({
   bool showAutoCloseIndicator = true,
   VoidCallback? onClose,
 }) async {
-  // Determine dialog type
   final dialogType = type ?? (isError ? DialogType.error : DialogType.success);
 
   Timer? autoCloseTimer;
-
-  // Add haptic feedback
   switch (dialogType) {
     case DialogType.error:
       HapticFeedback.heavyImpact();
@@ -101,20 +98,14 @@ class _EnhancedMessageDialogState extends State<_EnhancedMessageDialog>
   @override
   void initState() {
     super.initState();
-
-    // Scale animation for dialog entrance
     _scaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-
-    // Progress animation for auto-close indicator
     _progressAnimationController = AnimationController(
       duration: widget.autoCloseDuration,
       vsync: this,
     );
-
-    // Icon animation
     _iconAnimationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -143,8 +134,6 @@ class _EnhancedMessageDialogState extends State<_EnhancedMessageDialog>
       parent: _iconAnimationController,
       curve: Curves.elasticOut,
     ));
-
-    // Start animations
     _scaleAnimationController.forward();
     _iconAnimationController.forward();
 
@@ -226,12 +215,10 @@ class _EnhancedMessageDialogState extends State<_EnhancedMessageDialog>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Header with icon and auto-close indicator
                 Container(
                   padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                   child: Column(
                     children: [
-                      // Icon with animation
                       ScaleTransition(
                         scale: _iconAnimation,
                         child: Container(
@@ -254,8 +241,6 @@ class _EnhancedMessageDialogState extends State<_EnhancedMessageDialog>
                       ),
 
                       const SizedBox(height: 16),
-
-                      // Title
                       Text(
                         config.title,
                         style: theme.textTheme.titleLarge?.copyWith(
@@ -267,8 +252,6 @@ class _EnhancedMessageDialogState extends State<_EnhancedMessageDialog>
                     ],
                   ),
                 ),
-
-                // Message content
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
@@ -282,8 +265,6 @@ class _EnhancedMessageDialogState extends State<_EnhancedMessageDialog>
                 ),
 
                 const SizedBox(height: 24),
-
-                // Auto-close progress indicator
                 if (widget.showAutoCloseIndicator)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -330,8 +311,6 @@ class _EnhancedMessageDialogState extends State<_EnhancedMessageDialog>
                       ],
                     ),
                   ),
-
-                // Close button
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                   child: SizedBox(
@@ -388,8 +367,6 @@ class DialogConfig {
     required this.textColor,
   });
 }
-
-// Convenience methods for different dialog types
 Future<void> showErrorDialog({
   required BuildContext context,
   required String message,

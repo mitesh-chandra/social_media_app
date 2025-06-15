@@ -77,7 +77,6 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          // Enhanced User Avatar
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -115,8 +114,6 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
           ),
 
           const SizedBox(width: 12),
-
-          // Enhanced User Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,8 +146,6 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
               ],
             ),
           ),
-
-          // Enhanced Options Menu
           if (isOwner)
             Container(
               decoration: BoxDecoration(
@@ -281,6 +276,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                 'Delete',
                 style: theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: Colors.white
                 ),
               ),
             ),
@@ -293,7 +289,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
   Widget _buildPostContent() {
     final theme = Theme.of(context);
 
-    if (widget.post.title.isEmpty && widget.post.body.isEmpty) {
+    if (widget.post.title.plainText.isEmpty && widget.post.body.plainText.isEmpty) {
       return const SizedBox();
     }
 
@@ -302,29 +298,67 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.post.title.isNotEmpty)
-            Text(
-              widget.post.title,
-              style: theme.textTheme.titleMedium?.copyWith(
+          if (widget.post.title.plainText.isNotEmpty)
+            _buildRichTextDisplay(
+              content: widget.post.title,
+              defaultStyle: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: theme.colorScheme.onSurface,
                 height: 1.3,
               ),
             ),
-          if (widget.post.body.isNotEmpty)
+          if (widget.post.body.plainText.isNotEmpty)
             Padding(
-              padding: EdgeInsets.only(top: widget.post.title.isNotEmpty ? 8 : 0),
-              child: Text(
-                widget.post.body,
-                style: theme.textTheme.bodyMedium?.copyWith(
+              padding: EdgeInsets.only(top: widget.post.title.plainText.isNotEmpty ? 8 : 0),
+              child: _buildRichTextDisplay(
+                content: widget.post.body,
+                defaultStyle: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                   height: 1.4,
                 ),
+                maxLines: 4, // Limit lines for card preview
+                overflow: TextOverflow.ellipsis,
               ),
             ),
         ],
       ),
     );
+  }
+
+  Widget _buildRichTextDisplay({
+    required RichTextContent content,
+    TextStyle? defaultStyle,
+    int? maxLines,
+    TextOverflow? overflow,
+  }) {
+    return RichText(
+      text: _mergeDefaultStyleWithContent(content, defaultStyle),
+      textAlign: TextAlign.start,
+      maxLines: maxLines,
+      overflow: overflow ?? TextOverflow.visible,
+    );
+  }
+
+  TextSpan _mergeDefaultStyleWithContent(RichTextContent content, TextStyle? defaultStyle) {
+    if (content.segments.isEmpty) {
+      return TextSpan(
+        text: content.plainText,
+        style: defaultStyle,
+      );
+    }
+
+    final List<TextSpan> spans = [];
+    for (final segment in content.segments) {
+      final TextStyle mergedStyle = defaultStyle?.merge(segment.formatting.toTextStyle()) ??
+          segment.formatting.toTextStyle();
+
+      spans.add(TextSpan(
+        text: segment.text,
+        style: mergedStyle,
+      ));
+    }
+
+    return TextSpan(children: spans);
   }
 
   @override
@@ -354,28 +388,18 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
           },
           child: BlocListener<PostBloc, PostState>(
             listener: (context, state) {
-              // Handle state changes if needed
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Post Header with user info
                 _buildPostHeader(),
-
-                // Media Carousel
                 _buildMediaCarousel(),
-
-                // Post Content
                 _buildPostContent(),
-
-                // Divider
                 Container(
                   height: 1,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   color: theme.colorScheme.outline.withValues(alpha: 0.2),
                 ),
-
-                // Action Buttons
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: Row(

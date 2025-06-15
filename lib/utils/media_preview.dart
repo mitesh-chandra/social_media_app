@@ -35,7 +35,6 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
   late Animation<double> _fadeAnimation;
 
   bool _isOverlayVisible = true;
-  // bool _isLoading = false;
 
   MediaModel get currentMedia => widget.mediaList[currentIndex];
 
@@ -44,11 +43,7 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
     super.initState();
     currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
-
-    // Set full screen mode
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
-    // Initialize animations
     _overlayAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -81,7 +76,6 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
 
   @override
   void dispose() {
-    // Restore system UI
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     _pageController.dispose();
@@ -208,7 +202,6 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
-                      // Back button
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha:0.5),
@@ -225,8 +218,6 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
                       ),
 
                       const SizedBox(width: 16),
-
-                      // Media counter
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -259,8 +250,6 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
                       ),
 
                       const SizedBox(width: 16),
-
-                      // Delete button
                       if (widget.onRemove != null)
                         Container(
                           decoration: BoxDecoration(
@@ -349,7 +338,6 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
         opacity: _fadeAnimation,
         child: Stack(
           children: [
-            // Main content
             GestureDetector(
               onTap: _toggleOverlay,
               child: PageView.builder(
@@ -369,33 +357,18 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
                 },
               ),
             ),
-
-            // Top overlay (AppBar)
             Positioned(
               top: 0,
               left: 0,
               right: 0,
               child: _buildAppBar(),
             ),
-
-            // Bottom indicator
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: _buildBottomIndicator(),
             ),
-
-            // Loading overlay
-            // if (_isLoading)
-            //   Container(
-            //     color: Colors.black.withValues(alpha:0.5),
-            //     child: const Center(
-            //       child: CircularProgressIndicator(
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //   ),
           ],
         ),
       ),
@@ -410,7 +383,6 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
         minScale: 0.5,
         maxScale: 4.0,
         onInteractionStart: (details) {
-          // Hide overlay when user starts zooming/panning
           if (_isOverlayVisible) {
             _toggleOverlay();
           }
@@ -503,15 +475,4 @@ class _MediaViewerScreenState extends State<MediaViewerScreen>
       ),
     );
   }
-
-  // String _formatDuration(Duration duration) {
-  //   String twoDigits(int n) => n.toString().padLeft(2, '0');
-  //   final minutes = twoDigits(duration.inMinutes.remainder(60));
-  //   final seconds = twoDigits(duration.inSeconds.remainder(60));
-  //   final hours = duration.inHours;
-  //
-  //   return hours > 0
-  //       ? '${twoDigits(hours)}:$minutes:$seconds'
-  //       : '$minutes:$seconds';
-  // }
 }

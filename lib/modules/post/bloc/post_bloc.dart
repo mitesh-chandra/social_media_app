@@ -53,8 +53,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       final post = PostModel(
         id: id,
         userId: getStringAsync(AppConstant.userId),
-        title: state.store.title,
-        body: state.store.body,
+        title: state.store.title ?? RichTextContent(plainText: '', segments: []),
+        body: state.store.body ?? RichTextContent(plainText: '', segments: []),
         media: state.store.selectedMedia,
         comments: [],
         likes: [],
@@ -66,8 +66,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         PostState.postCreated(
           store: state.store.copyWith(
             isLoading: false,
-            title: '',
-            body: '',
+            title: null,
+            body: null,
             selectedMedia: [],
             postList: PostDb.getAllPosts()
           ),
@@ -138,7 +138,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
 
   Future<void> _onRemoveMediaEvent(_RemoveMediaEvent event, Emitter<PostState> emit,) async{
-    List<MediaModel> updated = List.from(state.store.selectedMedia);
+    final List<MediaModel> updated = List.from(state.store.selectedMedia);
 
     if (event.removeAll ?? false) {
       updated.clear();
@@ -223,8 +223,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       Emitter<PostState> emit,
       ) async {
     emit(PostState.general(store: state.store.copyWith(
-      title: '',
-      body: '',
+      title: null,
+      body: null,
       selectedMedia: [],
     )));
   }
@@ -238,9 +238,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       replyingToUser:event.userName,
     )));
   }
-
-
-  // Exposed functions
   void createPostEvent() => add(const PostEvent.createPostEvent());
   void fetchPostsEvent() => add(const PostEvent.fetchPostsEvent());
   void deletePostEvent(String postId) => add(PostEvent.deletePostEvent(postId: postId));
@@ -259,8 +256,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }) => add(PostEvent.removeMediaEvent(path: path,removeAll: removeAll,index: index));
 
   void setPostTextEvent({
-    String? title,
-    String? body,
+    RichTextContent? title,
+    RichTextContent? body,
     List<MediaModel>? media,
   }) {
     add(PostEvent.setPostTextEvent(title: title, body: body, media: media));

@@ -116,7 +116,6 @@ class _ErrorScreenState extends State<ErrorScreen> with TickerProviderStateMixin
                 children: [
                   const Spacer(),
 
-                  // Error Icon with animation
                   AnimatedBuilder(
                     animation: _pulseAnimation,
                     builder: (context, child) {
@@ -151,8 +150,6 @@ class _ErrorScreenState extends State<ErrorScreen> with TickerProviderStateMixin
                   ),
 
                   const SizedBox(height: 32),
-
-                  // Error Title
                   Text(
                     'Oops! Lost in Space',
                     style: theme.textTheme.headlineMedium?.copyWith(
@@ -163,8 +160,6 @@ class _ErrorScreenState extends State<ErrorScreen> with TickerProviderStateMixin
                   ),
 
                   const SizedBox(height: 16),
-
-                  // Error Description
                   Text(
                     widget.error ?? 'It looks like you\'ve wandered into uncharted territory. The page you\'re looking for doesn\'t exist.',
                     style: theme.textTheme.bodyLarge?.copyWith(
@@ -175,8 +170,6 @@ class _ErrorScreenState extends State<ErrorScreen> with TickerProviderStateMixin
                   ),
 
                   const SizedBox(height: 16),
-
-                  // Fun message
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -208,17 +201,13 @@ class _ErrorScreenState extends State<ErrorScreen> with TickerProviderStateMixin
                   ),
 
                   const SizedBox(height: 40),
-
-                  // Action Buttons
                   Column(
                     children: [
-                      // Go Home Button
                       SizedBox(
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // Navigate to home/main route
                             context.go('/');
                           },
                           style: ElevatedButton.styleFrom(
@@ -241,8 +230,6 @@ class _ErrorScreenState extends State<ErrorScreen> with TickerProviderStateMixin
                       ),
 
                       const SizedBox(height: 12),
-
-                      // Go Back Button
                       SizedBox(
                         width: double.infinity,
                         height: 48,
@@ -276,8 +263,6 @@ class _ErrorScreenState extends State<ErrorScreen> with TickerProviderStateMixin
                   ),
 
                   const Spacer(),
-
-                  // Footer with app info
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(

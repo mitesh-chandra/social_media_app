@@ -8,14 +8,15 @@ class DB{
  Future<void> init() async{
    final appDocumentDir = await getApplicationDocumentsDirectory();
    Hive.init(appDocumentDir.path);
-
-   //initialize boxes and adapters here
    Hive.registerAdapter(UserModelAdapter());
    Hive.registerAdapter(PostModelAdapter());
    Hive.registerAdapter(MediaModelAdapter());
    Hive.registerAdapter(CommentModelAdapter());
    Hive.registerAdapter(LikeModelAdapter());
    Hive.registerAdapter(MediaTypeAdapter());
-   Future.wait([Hive.openBox<UserModel>(AppConstant.userDb),Hive.openBox<String>(AppConstant.emailAndIdDb),Hive.openBox<PostModel>(AppConstant.postDb)]);
+   Hive.registerAdapter(RichTextContentAdapter());
+   Hive.registerAdapter(TextFormattingAdapter());
+   Hive.registerAdapter(TextSegmentAdapter());
+   await Future.wait([Hive.openBox<UserModel>(AppConstant.userDb),Hive.openBox<String>(AppConstant.emailAndIdDb),Hive.openBox<PostModel>(AppConstant.postDb)]);
  }
 }

@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media_app/core/route/app_route.dart';
 import 'package:social_media_app/modules/post/bloc/post_bloc.dart';
 import 'package:social_media_app/modules/post/model/post_model.dart';
+import 'package:social_media_app/modules/post/ui/text_formater.dart';
 import 'package:social_media_app/utils/message_dialog.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -19,9 +22,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-
-  final FocusNode _titleFocusNode = FocusNode();
-  final FocusNode _bodyFocusNode = FocusNode();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _bodyController = TextEditingController();
 
   @override
   void initState() {
@@ -53,8 +55,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
   @override
   void dispose() {
     _animationController.dispose();
-    _titleFocusNode.dispose();
-    _bodyFocusNode.dispose();
+    _titleController.dispose();
+    _bodyController.dispose();
     super.dispose();
   }
 
@@ -140,36 +142,58 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
           color: theme.colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
-      child: TextFormField(
-        focusNode: _titleFocusNode,
-        initialValue: store.title,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          hintText: 'What would you like to share?',
-          hintStyle: theme.textTheme.titleLarge?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-            fontWeight: FontWeight.w500,
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.all(20),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Icon(
-              Icons.title_rounded,
-              color: theme.colorScheme.primary,
-              size: 24,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.title_rounded,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Title',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '*',
+                  style: TextStyle(
+                    color: theme.colorScheme.error,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        style: theme.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: theme.colorScheme.onSurface,
-        ),
-        maxLines: 2,
-        validator: (v) => v != null && v.isNotEmpty
-            ? null
-            : 'Please enter a title for your post',
-        onChanged: (v) => context.read<PostBloc>().setPostTextEvent(title: v),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextFormatter(
+              controller: _titleController,
+              maxLines: 3,
+              hintText: "What would you like to share?",
+              showToolbar: true,
+              baseTextStyle: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
+              onContentChanged: (content) {
+                context.read<PostBloc>().setPostTextEvent(title: content);
+              },
+              validator: (text) => text?.trim().isNotEmpty == true
+                  ? null
+                  : 'Please enter a title for your post',
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -183,25 +207,47 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
           color: theme.colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
-      child: TextFormField(
-        focusNode: _bodyFocusNode,
-        initialValue: store.body,
-        decoration: InputDecoration(
-          hintText: "Share your thoughts, experiences, or ask a question...",
-          hintStyle: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.edit_rounded,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Content',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
           ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.all(20),
-        ),
-        style: theme.textTheme.bodyLarge?.copyWith(
-          height: 1.5,
-          color: theme.colorScheme.onSurface,
-        ),
-        maxLines: null,
-        expands: true,
-        textAlignVertical: TextAlignVertical.top,
-        onChanged: (v) => context.read<PostBloc>().setPostTextEvent(body: v),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextFormatter(
+              controller: _bodyController,
+              maxLines: 10,
+              hintText: "Share your thoughts, experiences, or ask a question...",
+              showToolbar: true,
+              baseTextStyle: theme.textTheme.bodyLarge?.copyWith(
+                height: 1.5,
+                color: theme.colorScheme.onSurface,
+              ),
+              onContentChanged: (content) {
+                context.read<PostBloc>().setPostTextEvent(body: content);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -221,6 +267,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -286,11 +333,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text(
-                    'Processing media...',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: Text(
+                      'Processing media...',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
@@ -299,79 +348,156 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
           ],
 
           const SizedBox(height: 16),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 400) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: isProcessing
+                          ? null
+                          : () async {
+                        final mediaList = await GoRouter.of(context)
+                            .push<List<MediaModel>>(AppRouter.galleryPage);
+                        if (mediaList != null) {
+                          context.read<PostBloc>().addMediaEvent(mediaList);
+                        }
+                      },
+                      icon: Icon(
+                        Icons.add_photo_alternate_rounded,
+                        size: 18,
+                        color: isProcessing
+                            ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                            : theme.colorScheme.primary,
+                      ),
+                      label: Text(
+                        hasMedia ? 'Add More' : 'Add Photos/Videos',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    if (hasMedia) ...[
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        onPressed: isProcessing
+                            ? null
+                            : () => context.read<PostBloc>().removeMediaEvent(removeAll: true),
+                        icon: Icon(
+                          Icons.clear_all_rounded,
+                          size: 18,
+                          color: isProcessing
+                              ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                              : theme.colorScheme.error,
+                        ),
+                        label: Text(
+                          'Clear All',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: isProcessing
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                                : theme.colorScheme.error,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: isProcessing
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                                : theme.colorScheme.error,
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+              } else {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: isProcessing
+                            ? null
+                            : () async {
+                          final mediaList = await GoRouter.of(context)
+                              .push<List<MediaModel>>(AppRouter.galleryPage);
+                          if (mediaList != null) {
+                            context.read<PostBloc>().addMediaEvent(mediaList);
+                          }
+                        },
+                        icon: Icon(
+                          Icons.add_photo_alternate_rounded,
+                          size: 18,
+                          color: isProcessing
+                              ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                              : theme.colorScheme.primary,
+                        ),
+                        label: Text(
+                          hasMedia ? 'Add More' : 'Add Photos/Videos',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
 
-          // Action Buttons
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: isProcessing
-                      ? null
-                      : () async {
-                    final mediaList = await GoRouter.of(context)
-                        .push<List<MediaModel>>(AppRouter.galleryPage);
-                    if (mediaList != null) {
-                      context.read<PostBloc>().addMediaEvent(mediaList);
-                    }
-                  },
-                  icon: Icon(
-                    Icons.add_photo_alternate_rounded,
-                    size: 18,
-                    color: isProcessing
-                        ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
-                        : theme.colorScheme.primary,
-                  ),
-                  label: Text(
-                    hasMedia ? 'Add More' : 'Add Photos/Videos',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-
-              if (hasMedia) ...[
-                const SizedBox(width: 12),
-                OutlinedButton.icon(
-                  onPressed: isProcessing
-                      ? null
-                      : () => context.read<PostBloc>().removeMediaEvent(removeAll: true),
-                  icon: Icon(
-                    Icons.clear_all_rounded,
-                    size: 18,
-                    color: isProcessing
-                        ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
-                        : theme.colorScheme.error,
-                  ),
-                  label: Text(
-                    'Clear All',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: isProcessing
-                          ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
-                          : theme.colorScheme.error,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                      color: isProcessing
-                          ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
-                          : theme.colorScheme.error,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
-            ],
+                    if (hasMedia) ...[
+                      const SizedBox(width: 12),
+                      Flexible(
+                        child: OutlinedButton.icon(
+                          onPressed: isProcessing
+                              ? null
+                              : () => context.read<PostBloc>().removeMediaEvent(removeAll: true),
+                          icon: Icon(
+                            Icons.clear_all_rounded,
+                            size: 18,
+                            color: isProcessing
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                                : theme.colorScheme.error,
+                          ),
+                          label: Text(
+                            'Clear All',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: isProcessing
+                                  ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                                  : theme.colorScheme.error,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: isProcessing
+                                  ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                                  : theme.colorScheme.error,
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+              }
+            },
           ),
         ],
       ),
@@ -439,75 +565,85 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
   }
 
   Widget _buildVideoPreview(String path, int index, ThemeData theme) {
-    return Container(
-      width: 120,
-      height: 120,
-      margin: const EdgeInsets.only(right: 12),
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: theme.colorScheme.outline.withValues(alpha: 0.3),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.colorScheme.shadow.withValues(alpha: 0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.videocam_rounded,
-                  size: 32,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Video',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 8,
-            right: 8,
-            child: GestureDetector(
-              onTap: () => context.read<PostBloc>().removeMediaEvent(index: index),
-              child: Container(
-                width: 24,
-                height: 24,
+    return FutureBuilder<Uint8List?>(
+      future: VideoThumbnail.thumbnailData(
+        video: path,
+        imageFormat: ImageFormat.JPEG,
+        maxWidth: 128,
+        quality: 75,
+      ),
+      builder: (context, snapshot) {
+        final thumbnail = snapshot.data;
+        print(thumbnail);
+
+        return Container(
+          width: 120,
+          height: 120,
+          margin: const EdgeInsets.only(right: 12),
+          child: Stack(
+            children: [
+              Container(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.error,
-                  shape: BoxShape.circle,
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withOpacity(0.3),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: theme.colorScheme.shadow.withOpacity(0.1),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
                   ],
+                  image: thumbnail != null
+                      ? DecorationImage(
+                    image: MemoryImage(thumbnail),
+                    fit: BoxFit.cover,
+                  )
+                      : null,
                 ),
-                child: Icon(
-                  Icons.close_rounded,
-                  color: theme.colorScheme.onError,
-                  size: 14,
+                child: thumbnail == null
+                    ? Center(
+                  child: Icon(
+                    Icons.videocam_rounded,
+                    size: 32,
+                    color: theme.colorScheme.primary,
+                  ),
+                )
+                    : null,
+              ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: GestureDetector(
+                  onTap: () => context.read<PostBloc>().removeMediaEvent(index: index),
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.error,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.close_rounded,
+                      color: theme.colorScheme.onError,
+                      size: 14,
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -601,27 +737,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> with TickerProvider
               child: SlideTransition(
                 position: _slideAnimation,
                 child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Form(
-                      key: _formKey,
+                  child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Title Field
                           _buildTitleField(store, theme),
 
                           const SizedBox(height: 16),
-
-                          // Body Field
-                          Expanded(
-                            flex: 3,
-                            child: _buildBodyField(store, theme),
-                          ),
+                          _buildBodyField(store, theme),
 
                           const SizedBox(height: 16),
-
-                          // Media Section
                           _buildMediaSection(store, theme),
+                          SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 100),
                         ],
                       ),
                     ),

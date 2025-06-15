@@ -30,7 +30,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // initializeDB();
     setupLocator();
     super.initState();
   }

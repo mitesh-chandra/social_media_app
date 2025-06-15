@@ -5,8 +5,8 @@ sealed class PostStore with _$PostStore {
   const factory PostStore({
     @Default(false) bool isLoading,
     @Default(false) bool isProcessingMedia,
-    @Default('') String title,
-    @Default('') String body,
+    @Default(null) RichTextContent? title,
+    @Default(null) RichTextContent? body,
     @Default([]) List<MediaModel> selectedMedia,
     @Default([]) List<PostModel> postList,
     @Default(null) String? replyingToCommentId,

@@ -16,6 +16,8 @@ sealed class AuthEvent with _$AuthEvent{
     String? profilePath,
 }) = _SetSignUpTextEvent;
 
+  const factory AuthEvent.updateUserProfileEvent(String? imagePath) = _UpdateUserProfileEvent;
+
   const factory AuthEvent.loginEvent() = _LoginEvent;
 
   const factory AuthEvent.signUpEvent() = _SignUpEvent;

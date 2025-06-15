@@ -252,27 +252,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> with TickerProvider
                   });
                 }
               case PostDeleted():
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle_rounded,
-                          color: theme.colorScheme.onPrimary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(state.message),
-                      ],
-                    ),
-                    backgroundColor: theme.colorScheme.primary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin: const EdgeInsets.all(16),
-                  ),
-                );
                 GoRouter.of(context).pop();
                 GoRouter.of(context).pop();
               case CommentAdded():
@@ -367,7 +346,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> with TickerProvider
   }
 
   Widget _buildPostContent(ThemeData theme) {
-    if (post!.title.isEmpty && post!.body.isEmpty) {
+    if (post!.title.plainText.isEmpty && post!.body.plainText.isEmpty) {
       return const SizedBox();
     }
 
@@ -384,21 +363,21 @@ class _PostDetailScreenState extends State<PostDetailScreen> with TickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (post!.title.isNotEmpty)
-            Text(
-              post!.title,
-              style: theme.textTheme.headlineSmall?.copyWith(
+          if (post!.title.plainText.isNotEmpty)
+            _buildRichTextDisplay(
+              content: post!.title,
+              defaultStyle: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colorScheme.onSurface,
                 height: 1.3,
               ),
             ),
-          if (post!.title.isNotEmpty && post!.body.isNotEmpty)
+          if (post!.title.plainText.isNotEmpty && post!.body.plainText.isNotEmpty)
             const SizedBox(height: 12),
-          if (post!.body.isNotEmpty)
-            Text(
-              post!.body,
-              style: theme.textTheme.bodyLarge?.copyWith(
+          if (post!.body.plainText.isNotEmpty)
+            _buildRichTextDisplay(
+              content: post!.body,
+              defaultStyle: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                 height: 1.5,
               ),
@@ -406,6 +385,38 @@ class _PostDetailScreenState extends State<PostDetailScreen> with TickerProvider
         ],
       ),
     );
+  }
+
+  Widget _buildRichTextDisplay({
+    required RichTextContent content,
+    TextStyle? defaultStyle,
+  }) {
+    return RichText(
+      text: _mergeDefaultStyleWithContent(content, defaultStyle),
+      textAlign: TextAlign.start,
+    );
+  }
+
+  TextSpan _mergeDefaultStyleWithContent(RichTextContent content, TextStyle? defaultStyle) {
+    if (content.segments.isEmpty) {
+      return TextSpan(
+        text: content.plainText,
+        style: defaultStyle,
+      );
+    }
+
+    final List<TextSpan> spans = [];
+    for (final segment in content.segments) {
+      final TextStyle mergedStyle = defaultStyle?.merge(segment.formatting.toTextStyle()) ??
+          segment.formatting.toTextStyle();
+
+      spans.add(TextSpan(
+        text: segment.text,
+        style: mergedStyle,
+      ));
+    }
+
+    return TextSpan(children: spans);
   }
 
   Widget _buildMediaContent() {

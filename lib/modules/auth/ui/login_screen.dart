@@ -93,28 +93,15 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const Spacer(flex: 1),
-
-                          // Welcome Section
                           _buildWelcomeSection(theme),
 
                           const SizedBox(height: 48),
-
-                          // Login Form
                           _buildLoginForm(bloc, theme),
 
                           const SizedBox(height: 32),
-
-                          // Login Button
                           _buildLoginButton(bloc, theme),
 
-                          // const SizedBox(height: 24),
-                          //
-                          // // Forgot Password Link
-                          // _buildForgotPasswordLink(theme),
-
                           const SizedBox(height: 32),
-
-                          // Sign Up Link
                           _buildSignUpLink(theme),
 
                           const Spacer(flex: 1),
@@ -134,7 +121,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   Widget _buildWelcomeSection(ThemeData theme) {
     return Column(
       children: [
-        // App Icon/Logo placeholder
         Container(
           width: 80,
           height: 80,
@@ -189,7 +175,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   Widget _buildLoginForm(AuthBloc bloc, ThemeData theme) {
     return Column(
       children: [
-        // Email Field
         TextFormField(
           decoration: const InputDecoration(
             labelText: 'Email Address',
@@ -213,8 +198,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         ),
 
         const SizedBox(height: 20),
-
-        // Password Field
         TextFormField(
           decoration: InputDecoration(
             labelText: 'Password',

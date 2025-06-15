@@ -33,7 +33,6 @@ class NestedCommentWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Author name
                   Row(
                     children: [
                       Text(
@@ -56,8 +55,6 @@ class NestedCommentWidget extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 4),
-
-                  /// Comment text
                   Text(
                     comment.text,
                     style: TextStyle(
@@ -67,8 +64,6 @@ class NestedCommentWidget extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 8),
-
-                  /// Reply button
                   GestureDetector(
                     onTap: () => onReply?.call(comment.id,user?.name.toUpperCase() ?? 'USER'),
                     child: const Text(
@@ -84,8 +79,6 @@ class NestedCommentWidget extends StatelessWidget {
               ),
             ),
           ),
-
-          /// Recursively render replies
           ...comment.replies.map(
                 (reply) => NestedCommentWidget(
               comment: reply,

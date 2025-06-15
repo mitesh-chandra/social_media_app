@@ -3,8 +3,8 @@ part of 'post_bloc.dart';
 @freezed
 sealed class PostEvent with _$PostEvent {
   const factory PostEvent.setPostTextEvent({
-    String? title,
-    String? body,
+    RichTextContent? title,
+    RichTextContent? body,
     List<MediaModel>? media,
   }) = _SetPostTextEvent;
 

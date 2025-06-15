@@ -36,8 +36,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
   @override
   void initState() {
     super.initState();
-
-    // Initialize animation controllers
     _controlsAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -52,8 +50,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-
-    // Initialize animations
     _controlsAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -108,8 +104,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
     }
 
     HapticFeedback.lightImpact();
-
-    // Animate play/pause button
     _playPauseAnimationController.forward().then((_) {
       _playPauseAnimationController.reverse();
     });
@@ -133,8 +127,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
       _showControls = true;
     });
     _controlsAnimationController.forward();
-
-    // Hide controls after 3 seconds if playing
     if (_isPlaying) {
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted && _isPlaying && !_isDragging) {
@@ -168,8 +160,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
     }
 
     HapticFeedback.mediumImpact();
-
-    // Seek forward 10 seconds
     final currentPosition = widget.controller!.value.position;
     final newPosition = currentPosition + const Duration(seconds: 10);
     final maxPosition = widget.controller!.value.duration;
@@ -177,8 +167,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
     widget.controller!.seekTo(
       newPosition > maxPosition ? maxPosition : newPosition,
     );
-
-    // Show seek animation
     _seekAnimationController.forward().then((_) {
       _seekAnimationController.reverse();
     });
@@ -191,8 +179,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
       _isDragging = true;
       _dragPosition = position;
     });
-
-    // Show controls while dragging
     setState(() {
       _showControls = true;
     });
@@ -357,7 +343,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
             child: Stack(
               alignment: Alignment.centerLeft,
               children: [
-                // Background track
                 Container(
                   height: 4,
                   width: double.infinity,
@@ -366,8 +351,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-
-                // Buffered track
                 if (buffered.isNotEmpty)
                   FractionallySizedBox(
                     widthFactor: buffered.last.end.inMilliseconds /
@@ -380,8 +363,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
                       ),
                     ),
                   ),
-
-                // Progress bar
                 FractionallySizedBox(
                   widthFactor: progress,
                   child: Container(
@@ -392,8 +373,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
                     ),
                   ),
                 ),
-
-                // Circular thumb aligned with progress
                 Positioned(
                   left: thumbPosition.clamp(0.0, progressWidth - 6),
                   child: Container(
@@ -507,18 +486,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
             borderRadius: widget.fullPreview ? null : BorderRadius.circular(12),
           ),
           child: Stack(
-            // alignment: Alignment.center,
 
             children: [
-              // Video player
               Center(
                 child: AspectRatio(
                   aspectRatio: widget.controller!.value.aspectRatio,
                   child: VideoPlayer(widget.controller!),
                 ),
               ),
-
-              // Controls overlay
               if (widget.fullPreview || !_isPlaying)
                 AnimatedBuilder(
                   animation: _controlsAnimation,
@@ -550,17 +525,10 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
                         ? MainAxisAlignment.spaceBetween
                         : MainAxisAlignment.center,
                     children: [
-                      // Top spacing for fullPreview
                       if (widget.fullPreview) const Spacer(),
-
-                      // Play/Pause button
                       Center(child: _buildPlayPauseButton()),
-
-                      // Seek indicator
                       if (widget.fullPreview)
                         _buildSeekIndicator(),
-
-                      // Bottom controls for fullPreview
                       if (widget.fullPreview) ...[
                         const Spacer(),
                         Padding(
@@ -621,8 +589,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
                     ],
                   ),
                 ),
-
-              // Video duration overlay for non-fullPreview
               if (!widget.fullPreview && !_isPlaying)
                 Positioned(
                   bottom: 8,
@@ -653,13 +619,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
   @override
   void didUpdateWidget(CustomVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    // Pause video when not current slide
     if (!widget.isCurrentSlide && _isPlaying) {
       widget.controller?.pause();
     }
-
-    // Update listener when controller changes
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller?.removeListener(_videoListener);
       widget.controller?.addListener(_videoListener);

@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:nb_utils/nb_utils.dart' hide DialogType;
 import 'package:social_media_app/core/route/app_route.dart';
+import 'package:social_media_app/modules/main_feed/ui/update_profile_pic_dialog.dart';
 import 'package:social_media_app/modules/post/bloc/post_bloc.dart';
+import 'package:social_media_app/modules/post/model/post_model.dart';
 import 'package:social_media_app/modules/post/ui/post_card.dart';
 import 'package:social_media_app/modules/user/db/user_db.dart';
 import 'package:social_media_app/modules/user/model/user_model.dart';
 import 'package:social_media_app/modules/auth/bloc/auth_bloc.dart';
+import 'package:social_media_app/utils/message_dialog.dart';
 
 class MainFeedScreen extends StatefulWidget {
   const MainFeedScreen({super.key});
@@ -19,8 +22,9 @@ class MainFeedScreen extends StatefulWidget {
   State<MainFeedScreen> createState() => _MainFeedScreenState();
 }
 
-class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStateMixin {
-  late final UserModel? currentUser;
+class _MainFeedScreenState extends State<MainFeedScreen>
+    with TickerProviderStateMixin {
+  late UserModel? currentUser;
   late AnimationController _fabAnimationController;
   late Animation<double> _fabAnimation;
 
@@ -34,13 +38,9 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
       vsync: this,
     );
 
-    _fabAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fabAnimationController,
-      curve: Curves.easeInOut,
-    ));
+    _fabAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fabAnimationController, curve: Curves.easeInOut),
+    );
 
     _fabAnimationController.forward();
   }
@@ -51,12 +51,15 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
     super.dispose();
   }
 
-  Widget _buildUserAvatar(ThemeData theme) {
+  Widget _buildUserAvatar(ThemeData theme, {bool inverse = false}) {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
-          colors: [
+          colors:inverse ? [
+            Colors.white,
+            Colors.white.withValues(alpha: 0.7),
+          ] : [
             theme.colorScheme.primary,
             theme.colorScheme.primary.withValues(alpha: 0.7),
           ],
@@ -71,29 +74,34 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
           ),
         ],
       ),
-      child: CircleAvatar(
-        radius: 18,
-        backgroundColor: Colors.transparent,
-        child: currentUser?.profilePath != null
-            ? ClipOval(
-          child: Image.file(
-            File(currentUser!.profilePath!),
-            width: 36,
-            height: 36,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => _buildDefaultAvatar(theme),
-          ),
-        )
-            : _buildDefaultAvatar(theme),
+      child: BlocBuilder<AuthBloc,AuthState>(
+        builder: (context,state) {
+          return CircleAvatar(
+            radius: 18,
+            backgroundColor: Colors.transparent,
+            child: currentUser?.profilePath != null
+                ? ClipOval(
+                    child: Image.file(
+                      File(currentUser!.profilePath!),
+                      width: 36,
+                      height: 36,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          _buildDefaultAvatar(theme,inverse),
+                    ),
+                  )
+                : _buildDefaultAvatar(theme,inverse),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildDefaultAvatar(ThemeData theme) {
+  Widget _buildDefaultAvatar(ThemeData theme,bool inverse) {
     return Text(
       currentUser?.name.substring(0, 1).toUpperCase() ?? 'U',
       style: theme.textTheme.titleMedium?.copyWith(
-        color: theme.colorScheme.onPrimary,
+        color:inverse ? theme.colorScheme.primary : Colors.white,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -102,11 +110,10 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
   Widget _buildEmptyState(ThemeData theme) {
     return Center(
       child: Column(
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 120,
-            height: 120,
+          DecoratedBox(
             decoration: BoxDecoration(
               color: theme.colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(60),
@@ -133,20 +140,6 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
             ),
             textAlign: TextAlign.center,
           ),
-          // const SizedBox(height: 32),
-          // ElevatedButton.icon(
-          //   onPressed: () {
-          //     context.push(AppRouter.createPost);
-          //   },
-          //   icon: const Icon(Icons.add_rounded),
-          //   label: const Text('Create First Post'),
-          //   style: ElevatedButton.styleFrom(
-          //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(12),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -167,12 +160,10 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
           'Post',
           style: theme.textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            color: Colors.white
+            color: Colors.white,
           ),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }
@@ -226,7 +217,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: PopupMenuButton(
-                icon: _buildUserAvatar(theme),
+                icon: _buildUserAvatar(theme,inverse: true),
                 offset: const Offset(0, 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -234,7 +225,10 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
                 elevation: 8,
                 itemBuilder: (context) => <PopupMenuEntry>[
                   PopupMenuItem(
-                    enabled: false,
+
+                    onTap: () {showUpdateProfilePicDialog(context,currentUser?.profilePath);
+
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
@@ -248,7 +242,8 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
                                 Text(
                                   'Welcome back!',
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                    color: theme.colorScheme.onSurface
+                                        .withValues(alpha: 0.6),
                                   ),
                                 ),
                                 const SizedBox(height: 2),
@@ -266,18 +261,16 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
                       ),
                     ),
                   ),
-                  const PopupMenuDivider(
-                    indent: 16,
-                    endIndent: 16,
-                    height: 1,
-                  ),
+                  const PopupMenuDivider(indent: 16, endIndent: 16, height: 1),
                   PopupMenuItem(
                     child: Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.error.withValues(alpha: 0.1),
+                            color: theme.colorScheme.error.withValues(
+                              alpha: 0.1,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
@@ -311,6 +304,10 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
               case LogOutSuccess():
                 context.go(AppRouter.login);
                 toast(state.message);
+              case PofilePicUpdated():
+                currentUser = UserDb.getCurrentUser();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+                GoRouter.of(context).pop();
               default:
             }
           },
@@ -325,7 +322,8 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
                 listener: (context, state) {
                   switch (state) {
                     case PostDeleted():
-                      GoRouter.of(context).pop();
+                      if(GoRouter.of(context).canPop()){
+                      GoRouter.of(context).pop();}
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Row(
@@ -336,7 +334,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
                                 size: 20,
                               ),
                               const SizedBox(width: 8),
-                              const Text('Post deleted successfully'),
+                              Text(state.message),
                             ],
                           ),
                           backgroundColor: theme.colorScheme.primary,
@@ -364,7 +362,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> with TickerProviderStat
                       return PostCard(
                         post: post,
                         isLiked: post.likes.any(
-                              (like) => like.userId == UserDb.getCurrentUser()?.id,
+                          (like) => like.userId == UserDb.getCurrentUser()?.id,
                         ),
                       );
                     },

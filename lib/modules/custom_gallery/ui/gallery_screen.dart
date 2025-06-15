@@ -110,11 +110,9 @@ class _GalleryScreenState extends State<GalleryScreen> with TickerProviderStateM
     final currentSelection = Set<String>.from(_selectedAssets.value);
 
     if (widget.singleSelect) {
-      // For single select, clear previous selection and add new one
       currentSelection.clear();
       currentSelection.add(asset.id);
     } else {
-      // For multi-select, toggle the selection
       if (currentSelection.contains(asset.id)) {
         currentSelection.remove(asset.id);
       } else {
@@ -293,7 +291,6 @@ class _GalleryScreenState extends State<GalleryScreen> with TickerProviderStateM
           }),
           onChanged: (value) async {
             if (value == null) return;
-            // setState(() => _currentAlbumIndex = value);
             _currentAlbumIndex = value;
             await _loadMediaFromAlbum(_albums[_currentAlbumIndex]);
           },
@@ -540,8 +537,6 @@ class _MediaGridItemState extends State<MediaGridItem> with SingleTickerProvider
 
   void _onTap() {
     widget.onToggleSelection();
-
-    // Animate selection
     _selectionAnimationController.forward().then((_) {
       _selectionAnimationController.reverse();
     });
@@ -588,7 +583,6 @@ class _MediaGridItemState extends State<MediaGridItem> with SingleTickerProvider
                       onTap: widget.onViewMedia,
                       child: Stack(
                         children: [
-                          // Thumbnail
                           Positioned.fill(
                             child: _loading
                                 ? Container(
@@ -613,8 +607,6 @@ class _MediaGridItemState extends State<MediaGridItem> with SingleTickerProvider
                               ),
                             ),
                           ),
-
-                          // Selection overlay
                           if (isSelected)
                             Positioned.fill(
                               child: Container(
@@ -624,8 +616,6 @@ class _MediaGridItemState extends State<MediaGridItem> with SingleTickerProvider
                                 ),
                               ),
                             ),
-
-                          // Selection button
                           Positioned(
                             top: 8,
                             right: 8,
@@ -654,8 +644,6 @@ class _MediaGridItemState extends State<MediaGridItem> with SingleTickerProvider
                               ),
                             ),
                           ),
-
-                          // Video indicator
                           if (widget.asset.type == AssetType.video)
                             Positioned(
                               bottom: 8,

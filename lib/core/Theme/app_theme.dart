@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
-    // Enhanced color palette for better visual appeal
     const primaryColor = Color(0xFF1E40AF); // Blue-700 (deeper blue)
     const primaryVariant = Color(0xFF3B82F6); // Blue-500 (lighter variant)
     const secondaryColor = Color(0xFFEF4444); // Red-500 (softer red)
@@ -33,11 +32,7 @@ class AppTheme {
     return ThemeData(
       colorScheme: colorScheme,
       useMaterial3: true,
-
-      // Scaffold background with subtle gradient feel
       scaffoldBackgroundColor: surfaceColor,
-
-      // Enhanced AppBar with gradient-like depth
       appBarTheme: const AppBarTheme(
         backgroundColor: primaryColor,
         foregroundColor: onPrimaryColor,
@@ -56,8 +51,6 @@ class AppTheme {
           size: 22,
         ),
       ),
-
-      // Enhanced Typography with better hierarchy
       textTheme: TextTheme(
         displayLarge: const TextStyle(
           fontSize: 32,
@@ -121,23 +114,17 @@ class AppTheme {
           letterSpacing: 0.1,
         ),
       ),
-
-      // Enhanced Icon theme
       iconTheme: const IconThemeData(
         color: primaryColor,
         size: 22,
         opacity: 1.0,
       ),
-
-      // Modern divider
       dividerColor: dividerColor,
       dividerTheme: const DividerThemeData(
         color: dividerColor,
         thickness: 1,
         space: 1,
       ),
-
-      // Enhanced Floating Action Button
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: primaryColor,
         foregroundColor: onPrimaryColor,
@@ -148,8 +135,6 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         iconSize: 24,
       ),
-
-      // Enhanced ElevatedButton with modern styling
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
@@ -166,8 +151,6 @@ class AppTheme {
           ),
         ),
       ),
-
-      // Enhanced OutlinedButton
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: primaryColor,
@@ -182,8 +165,6 @@ class AppTheme {
           ),
         ),
       ),
-
-      // Enhanced TextButton
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryColor,
@@ -196,8 +177,6 @@ class AppTheme {
           ),
         ),
       ),
-
-      // Enhanced Input Fields with modern styling
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: backgroundColor,
@@ -239,8 +218,6 @@ class AppTheme {
           fontWeight: FontWeight.w400,
         ),
       ),
-
-      // Enhanced SnackBar
       snackBarTheme: SnackBarThemeData(
         backgroundColor: onSurfaceColor,
         contentTextStyle: const TextStyle(
@@ -253,8 +230,6 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         actionTextColor: primaryVariant,
       ),
-
-      // Enhanced Card with modern shadows
       cardTheme: CardThemeData(
         color: cardColor,
         elevation: 2,
@@ -263,8 +238,6 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         clipBehavior: Clip.antiAlias,
       ),
-
-      // Enhanced Dialog
       dialogTheme: DialogThemeData(
         backgroundColor: backgroundColor,
         elevation: 8,
@@ -283,8 +256,6 @@ class AppTheme {
           height: 1.4,
         ),
       ),
-
-      // Enhanced Bottom Sheet
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: backgroundColor,
         elevation: 8,
@@ -295,8 +266,6 @@ class AppTheme {
         ),
         clipBehavior: Clip.antiAlias,
       ),
-
-      // Enhanced Bottom Navigation Bar
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: backgroundColor,
         selectedItemColor: primaryColor,
@@ -320,8 +289,6 @@ class AppTheme {
           size: 22,
         ),
       ),
-
-      // Enhanced Chip with modern styling
       chipTheme: ChipThemeData(
         backgroundColor: surfaceColor,
         selectedColor: primaryColor.withValues(alpha:0.12),
@@ -344,8 +311,6 @@ class AppTheme {
         elevation: 0,
         pressElevation: 1,
       ),
-
-      // Enhanced ListTile
       listTileTheme: ListTileThemeData(
         iconColor: primaryColor,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -362,8 +327,6 @@ class AppTheme {
           fontWeight: FontWeight.w400,
         ),
       ),
-
-      // Enhanced Tooltip
       tooltipTheme: const TooltipThemeData(
         decoration: BoxDecoration(
           color: onSurfaceColor,
@@ -383,15 +346,11 @@ class AppTheme {
         ),
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
-
-      // Enhanced Progress Indicators
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: primaryColor,
         linearTrackColor: dividerColor,
         circularTrackColor: dividerColor,
       ),
-
-      // Enhanced Switch theme
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
@@ -406,8 +365,6 @@ class AppTheme {
           return disabledColor.withValues(alpha:0.3);
         }),
       ),
-
-      // Enhanced Checkbox theme
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {

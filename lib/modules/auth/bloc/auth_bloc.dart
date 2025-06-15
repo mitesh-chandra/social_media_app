@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:social_media_app/core/app_constant.dart';
 import 'package:social_media_app/modules/user/db/user_db.dart';
 import 'package:social_media_app/modules/user/model/user_model.dart';
 import 'package:social_media_app/utils/global_functions.dart';
@@ -17,6 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState.initial(store: AuthStore())) {
     on<_SetLoginTextEvent>(_onSetLoginTextEvent);
     on<_SetSignUpTextEvent>(_onSetSignUpTextEvent);
+    on<_UpdateUserProfileEvent>(_onUpdateUserProfileEvent);
     on<_LoginEvent>(_onLoginEvent);
     on<_SignUpEvent>(_onSignUpEvent);
     on<_LogoutEvent>(_onLogoutEvent);
@@ -52,6 +54,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       ),
     );
+  }
+
+  Future<void> _onUpdateUserProfileEvent(
+    _UpdateUserProfileEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      emit(AuthState.general(store: state.store.copyWith(isLoading: true)));
+      final user = UserDb.getUser(getStringAsync(AppConstant.userId));
+      final updatedUser = UserModel(
+        id: user?.id ?? '',
+        name: user?.name ?? '',
+        gender: user?.gender ?? '',
+        dob: user?.dob ?? DateTime(2000, 01, 01),
+        email: user?.email ?? '',
+        hashPassword: user?.hashPassword ?? '',
+        profilePath: event.imagePath,
+      );
+      updatedUser.save();
+      emit(AuthState.profilePicUpdated(store: state.store.copyWith(isLoading: false,),message:'Profile pic updated.'));
+    } catch (e) {
+      emit(
+        AuthState.authError(
+          store: state.store.copyWith(isLoading: false),
+          error: 'An error occurred updating profile.',
+        ),
+      );
+    }
   }
 
   Future<void> _onLoginEvent(_LoginEvent event, Emitter<AuthState> emit) async {
@@ -160,6 +190,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
   }
+
+  void updateUserProfileEvent(String? imagePath) =>
+    add(AuthEvent.updateUserProfileEvent(imagePath));
+
 
   void loginEvent() {
     add(const AuthEvent.loginEvent());

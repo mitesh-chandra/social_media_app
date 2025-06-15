@@ -5,6 +5,7 @@ sealed class AuthState with _$AuthState{
   const factory AuthState.initial({required AuthStore store}) = Initial;
   const factory AuthState.general({required AuthStore store}) = General;
 
+  const factory AuthState.profilePicUpdated({required AuthStore store,required String message}) = PofilePicUpdated;
   const factory AuthState.loginSuccess({required AuthStore store,required String message}) = LoginSuccess;
   const factory AuthState.signUpSuccess({required AuthStore store,required String message}) = SignUpSuccess;
   const factory AuthState.logOutSuccess({required AuthStore store,required String message}) = LogOutSuccess;

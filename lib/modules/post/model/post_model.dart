@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 part 'post_model.g.dart';
 part 'like_model.dart';
 part 'media_model.dart';
 part 'comment_model.dart';
+part 'rich_text_model.dart';
 
 @HiveType(typeId: 1)
 class PostModel extends HiveObject {
@@ -14,10 +16,10 @@ class PostModel extends HiveObject {
   final String userId;
 
   @HiveField(2)
-  final String title;
+  final RichTextContent title;
 
   @HiveField(3)
-  final String body;
+  final RichTextContent body; // Changed to RichTextContent
 
   @HiveField(4)
   final List<MediaModel> media;
@@ -58,5 +60,36 @@ class PostModel extends HiveObject {
     }
     return count;
   }
+  String get plainText => body.plainText;
+  String get preview => body.preview;
+  bool get hasFormatting => body.segments.length > 1 ||
+      body.segments.any((s) => s.formatting.isBold ||
+          s.formatting.isItalic ||
+          s.formatting.isUnderline ||
+          s.formatting.fontSize != 16.0 ||
+          s.formatting.colorValue != 0xFF000000);
 
+  PostModel copyWith({
+    String? id,
+    String? userId,
+    RichTextContent? title,
+    RichTextContent? body,
+    List<MediaModel>? media,
+    List<CommentModel>? comments,
+    List<LikeModel>? likes,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return PostModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      media: media ?? this.media,
+      comments: comments ?? this.comments,
+      likes: likes ?? this.likes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

@@ -101,28 +101,18 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const SizedBox(height: 16),
-
-                            // Welcome Header - More compact
                             _buildHeader(theme),
 
                             const SizedBox(height: 24),
-
-                            // Profile Image Section - More compact
                             _buildProfileImageSection(context, state, theme),
 
                             const SizedBox(height: 24),
-
-                            // Form Fields
                             _buildFormFields(context, state, theme),
 
                             const SizedBox(height: 24),
-
-                            // Sign Up Button
                             _buildSignUpButton(context, state, theme),
 
                             const SizedBox(height: 16),
-
-                            // Login Link
                             _buildLoginLink(context, theme),
 
                             const SizedBox(height: 16),
@@ -243,7 +233,6 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
   Widget _buildFormFields(BuildContext context, AuthState state, ThemeData theme) {
     return Column(
       children: [
-        // Name Field
         _buildTextField(
           labelText: 'Full Name',
           hintText: 'Enter your full name',
@@ -259,8 +248,6 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
         ),
 
         const SizedBox(height: 16),
-
-        // Email Field
         _buildTextField(
           labelText: 'Email Address',
           hintText: 'Enter your email',
@@ -282,18 +269,12 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
         ),
 
         const SizedBox(height: 16),
-
-        // Date of Birth Field
         _buildDatePickerField(context, state, theme),
 
         const SizedBox(height: 16),
-
-        // Gender Dropdown
         _buildGenderDropdown(context, state, theme),
 
         const SizedBox(height: 16),
-
-        // Password Field
         _buildTextField(
           labelText: 'Password',
           hintText: 'Create a strong password',
@@ -308,8 +289,6 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
         ),
 
         const SizedBox(height: 16),
-
-        // Confirm Password Field
         _buildTextField(
           labelText: 'Confirm Password',
           hintText: 'Re-enter your password',
@@ -401,8 +380,6 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
             _selectedDate = pickedDate;
             _dobController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
           });
-
-          // Update bloc with selected date
           context.read<AuthBloc>().setSignUpTextEvent(dob: pickedDate);
         }
       },
@@ -420,24 +397,33 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
     void Function(String)? onChanged,
   }) {
     final theme = Theme.of(context);
-
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        prefixIcon: Icon(prefixIcon),
-        suffixIcon: obscureText
-            ? Icon(
-          Icons.visibility_off_outlined,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-        )
-            : null,
-      ),
-      keyboardType: keyboardType,
-      textCapitalization: textCapitalization,
-      obscureText: obscureText,
-      validator: validator,
-      onChanged: onChanged,
+bool isVisible = false;
+    return StatefulBuilder(
+      builder: (context,changeState) {
+        return TextFormField(
+          decoration: InputDecoration(
+            labelText: labelText,
+            hintText: hintText,
+            prefixIcon: Icon(prefixIcon),
+            suffixIcon: obscureText
+                ? IconButton(
+              icon:Icon(isVisible ? Icons.visibility_off_outlined : Icons.visibility),
+              onPressed: (){
+                changeState((){
+                  isVisible = !isVisible;
+                });
+              },
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            )
+                : null,
+          ),
+          keyboardType: keyboardType,
+          textCapitalization: textCapitalization,
+          obscureText: obscureText ? !isVisible : false,
+          validator: validator,
+          onChanged: onChanged,
+        );
+      },
     );
   }
 

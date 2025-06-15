@@ -85,8 +85,6 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
       if (media.type == MediaType.video && media.url.isNotEmpty) {
         final controller = VideoPlayerController.file(File(media.url));
         _videoControllers.add(controller);
-
-        // Initialize video and update loading state
         controller.initialize().then((_) {
           if (mounted) {
             setState(() {
@@ -102,7 +100,6 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
         });
       } else {
         _videoControllers.add(null);
-        // For images, we'll update loading state when they load
       }
     }
   }
@@ -164,13 +161,11 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Image
               Image.file(
                 File(media.url),
                 fit: BoxFit.cover,
                 frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                   if (wasSynchronouslyLoaded) {
-                    // Update loading state immediately for synchronous loading
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (mounted) {
                         setState(() {
@@ -206,19 +201,13 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
                   return _buildErrorContent(theme);
                 },
               ),
-
-              // Loading overlay
               if (_mediaLoadingStates[index] == true)
                 _buildLoadingOverlay(theme),
-
-              // Media type indicator
               Positioned(
                 top: 12,
                 left: 12,
                 child: _buildMediaTypeChip(Icons.image_rounded, 'Photo', theme),
               ),
-
-              // Tap to expand indicator
               if (widget.enableFullscreen)
                 Positioned(
                   bottom: 12,
@@ -244,24 +233,17 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
           ),
           child: Stack(
             children: [
-              // Video Player
               CustomVideoPlayer(
                 controller: _videoControllers[index],
                 isCurrentSlide: _currentIndex.value == index,
               ),
-
-              // Loading overlay for video
               if (_mediaLoadingStates[index] == true)
                 _buildLoadingOverlay(theme),
-
-              // Media type indicator
               Positioned(
                 top: 12,
                 left: 12,
                 child: _buildMediaTypeChip(Icons.videocam_rounded, 'Video', theme),
               ),
-
-              // Tap to expand indicator
               if (widget.enableFullscreen)
                 Positioned(
                   bottom: 12,
@@ -407,7 +389,6 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Previous button
             if (widget.mediaList.length > 3)
               ValueListenableBuilder<int>(
                 valueListenable: _currentIndex,
@@ -433,8 +414,6 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
                   );
                 },
               ),
-
-            // Indicators
             ...widget.mediaList.asMap().entries.map((entry) {
               return ValueListenableBuilder<int>(
                 valueListenable: _currentIndex,
@@ -469,8 +448,6 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
                 },
               );
             }),
-
-            // Next button
             if (widget.mediaList.length > 3)
               ValueListenableBuilder<int>(
                 valueListenable: _currentIndex,
@@ -577,7 +554,6 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
 
     return Column(
       children: [
-        // Carousel
         Expanded(
           child: CarouselSlider(
             items: widget.mediaList.asMap().entries.map((entry) {
@@ -596,11 +572,7 @@ class _MediaCarouselState extends State<MediaCarousel> with TickerProviderStateM
             ),
           ),
         ),
-
-        // Modern Indicators
         _buildModernIndicators(theme),
-
-        // Media Counter
         _buildMediaCounter(theme),
       ],
     );

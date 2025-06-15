@@ -1,18 +1,6 @@
-// dart format width=80
-// coverage:ignore-file
-// GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'auth_bloc.dart';
-
-// **************************************************************************
-// FreezedGenerator
-// **************************************************************************
-
-// dart format off
 T _$identity<T>(T value) => value;
-/// @nodoc
 mixin _$AuthEvent {
 
 
@@ -35,14 +23,9 @@ String toString() {
 
 
 }
-
-/// @nodoc
 class $AuthEventCopyWith<$Res>  {
 $AuthEventCopyWith(AuthEvent _, $Res Function(AuthEvent) __);
 }
-
-
-/// @nodoc
 
 
 class _SetLoginTextEvent implements AuthEvent {
@@ -51,9 +34,6 @@ class _SetLoginTextEvent implements AuthEvent {
 
  final  String? email;
  final  String? password;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$SetLoginTextEventCopyWith<_SetLoginTextEvent> get copyWith => __$SetLoginTextEventCopyWithImpl<_SetLoginTextEvent>(this, _$identity);
@@ -76,8 +56,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class _$SetLoginTextEventCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
   factory _$SetLoginTextEventCopyWith(_SetLoginTextEvent value, $Res Function(_SetLoginTextEvent) _then) = __$SetLoginTextEventCopyWithImpl;
 @useResult
@@ -89,16 +67,12 @@ $Res call({
 
 
 }
-/// @nodoc
 class __$SetLoginTextEventCopyWithImpl<$Res>
     implements _$SetLoginTextEventCopyWith<$Res> {
   __$SetLoginTextEventCopyWithImpl(this._self, this._then);
 
   final _SetLoginTextEvent _self;
   final $Res Function(_SetLoginTextEvent) _then;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? email = freezed,Object? password = freezed,}) {
   return _then(_SetLoginTextEvent(
 email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -109,8 +83,6 @@ as String?,
 
 
 }
-
-/// @nodoc
 
 
 class _SetSignUpTextEvent implements AuthEvent {
@@ -123,9 +95,6 @@ class _SetSignUpTextEvent implements AuthEvent {
  final  String? gender;
  final  String? password;
  final  String? profilePath;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$SetSignUpTextEventCopyWith<_SetSignUpTextEvent> get copyWith => __$SetSignUpTextEventCopyWithImpl<_SetSignUpTextEvent>(this, _$identity);
@@ -148,8 +117,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class _$SetSignUpTextEventCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
   factory _$SetSignUpTextEventCopyWith(_SetSignUpTextEvent value, $Res Function(_SetSignUpTextEvent) _then) = __$SetSignUpTextEventCopyWithImpl;
 @useResult
@@ -161,16 +128,12 @@ $Res call({
 
 
 }
-/// @nodoc
 class __$SetSignUpTextEventCopyWithImpl<$Res>
     implements _$SetSignUpTextEventCopyWith<$Res> {
   __$SetSignUpTextEventCopyWithImpl(this._self, this._then);
 
   final _SetSignUpTextEvent _self;
   final $Res Function(_SetSignUpTextEvent) _then;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? email = freezed,Object? dob = freezed,Object? gender = freezed,Object? password = freezed,Object? profilePath = freezed,}) {
   return _then(_SetSignUpTextEvent(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -186,7 +149,60 @@ as String?,
 
 }
 
-/// @nodoc
+
+class _UpdateUserProfileEvent implements AuthEvent {
+  const _UpdateUserProfileEvent(this.imagePath);
+  
+
+ final  String? imagePath;
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateUserProfileEventCopyWith<_UpdateUserProfileEvent> get copyWith => __$UpdateUserProfileEventCopyWithImpl<_UpdateUserProfileEvent>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateUserProfileEvent&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,imagePath);
+
+@override
+String toString() {
+  return 'AuthEvent.updateUserProfileEvent(imagePath: $imagePath)';
+}
+
+
+}
+abstract mixin class _$UpdateUserProfileEventCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory _$UpdateUserProfileEventCopyWith(_UpdateUserProfileEvent value, $Res Function(_UpdateUserProfileEvent) _then) = __$UpdateUserProfileEventCopyWithImpl;
+@useResult
+$Res call({
+ String? imagePath
+});
+
+
+
+
+}
+class __$UpdateUserProfileEventCopyWithImpl<$Res>
+    implements _$UpdateUserProfileEventCopyWith<$Res> {
+  __$UpdateUserProfileEventCopyWithImpl(this._self, this._then);
+
+  final _UpdateUserProfileEvent _self;
+  final $Res Function(_UpdateUserProfileEvent) _then;
+@pragma('vm:prefer-inline') $Res call({Object? imagePath = freezed,}) {
+  return _then(_UpdateUserProfileEvent(
+freezed == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
 
 
 class _LoginEvent implements AuthEvent {
@@ -216,11 +232,6 @@ String toString() {
 }
 
 
-
-
-/// @nodoc
-
-
 class _SignUpEvent implements AuthEvent {
   const _SignUpEvent();
   
@@ -248,11 +259,6 @@ String toString() {
 }
 
 
-
-
-/// @nodoc
-
-
 class _LogoutEvent implements AuthEvent {
   const _LogoutEvent();
   
@@ -278,16 +284,9 @@ String toString() {
 
 
 }
-
-
-
-
-/// @nodoc
 mixin _$AuthState {
 
  AuthStore get store;
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>(this as AuthState, _$identity);
@@ -310,8 +309,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
@@ -323,24 +320,18 @@ $Res call({
 $AuthStoreCopyWith<$Res> get store;
 
 }
-/// @nodoc
 class _$AuthStateCopyWithImpl<$Res>
     implements $AuthStateCopyWith<$Res> {
   _$AuthStateCopyWithImpl(this._self, this._then);
 
   final AuthState _self;
   final $Res Function(AuthState) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? store = null,}) {
   return _then(_self.copyWith(
 store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
 as AuthStore,
   ));
 }
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<$Res> get store {
@@ -352,17 +343,11 @@ $AuthStoreCopyWith<$Res> get store {
 }
 
 
-/// @nodoc
-
-
 class Initial implements AuthState {
   const Initial({required this.store});
   
 
 @override final  AuthStore store;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $InitialCopyWith<Initial> get copyWith => _$InitialCopyWithImpl<Initial>(this, _$identity);
@@ -385,8 +370,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $InitialCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
   factory $InitialCopyWith(Initial value, $Res Function(Initial) _then) = _$InitialCopyWithImpl;
 @override @useResult
@@ -398,25 +381,18 @@ $Res call({
 @override $AuthStoreCopyWith<$Res> get store;
 
 }
-/// @nodoc
 class _$InitialCopyWithImpl<$Res>
     implements $InitialCopyWith<$Res> {
   _$InitialCopyWithImpl(this._self, this._then);
 
   final Initial _self;
   final $Res Function(Initial) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? store = null,}) {
   return _then(Initial(
 store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
 as AuthStore,
   ));
 }
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<$Res> get store {
@@ -427,17 +403,12 @@ $AuthStoreCopyWith<$Res> get store {
 }
 }
 
-/// @nodoc
-
 
 class General implements AuthState {
   const General({required this.store});
   
 
 @override final  AuthStore store;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $GeneralCopyWith<General> get copyWith => _$GeneralCopyWithImpl<General>(this, _$identity);
@@ -460,8 +431,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $GeneralCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
   factory $GeneralCopyWith(General value, $Res Function(General) _then) = _$GeneralCopyWithImpl;
 @override @useResult
@@ -473,25 +442,18 @@ $Res call({
 @override $AuthStoreCopyWith<$Res> get store;
 
 }
-/// @nodoc
 class _$GeneralCopyWithImpl<$Res>
     implements $GeneralCopyWith<$Res> {
   _$GeneralCopyWithImpl(this._self, this._then);
 
   final General _self;
   final $Res Function(General) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? store = null,}) {
   return _then(General(
 store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
 as AuthStore,
   ));
 }
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<$Res> get store {
@@ -502,7 +464,68 @@ $AuthStoreCopyWith<$Res> get store {
 }
 }
 
-/// @nodoc
+
+class PofilePicUpdated implements AuthState {
+  const PofilePicUpdated({required this.store, required this.message});
+  
+
+@override final  AuthStore store;
+ final  String message;
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PofilePicUpdatedCopyWith<PofilePicUpdated> get copyWith => _$PofilePicUpdatedCopyWithImpl<PofilePicUpdated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PofilePicUpdated&&(identical(other.store, store) || other.store == store)&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,store,message);
+
+@override
+String toString() {
+  return 'AuthState.profilePicUpdated(store: $store, message: $message)';
+}
+
+
+}
+abstract mixin class $PofilePicUpdatedCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $PofilePicUpdatedCopyWith(PofilePicUpdated value, $Res Function(PofilePicUpdated) _then) = _$PofilePicUpdatedCopyWithImpl;
+@override @useResult
+$Res call({
+ AuthStore store, String message
+});
+
+
+@override $AuthStoreCopyWith<$Res> get store;
+
+}
+class _$PofilePicUpdatedCopyWithImpl<$Res>
+    implements $PofilePicUpdatedCopyWith<$Res> {
+  _$PofilePicUpdatedCopyWithImpl(this._self, this._then);
+
+  final PofilePicUpdated _self;
+  final $Res Function(PofilePicUpdated) _then;
+@override @pragma('vm:prefer-inline') $Res call({Object? store = null,Object? message = null,}) {
+  return _then(PofilePicUpdated(
+store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
+as AuthStore,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+@override
+@pragma('vm:prefer-inline')
+$AuthStoreCopyWith<$Res> get store {
+  
+  return $AuthStoreCopyWith<$Res>(_self.store, (value) {
+    return _then(_self.copyWith(store: value));
+  });
+}
+}
 
 
 class LoginSuccess implements AuthState {
@@ -511,9 +534,6 @@ class LoginSuccess implements AuthState {
 
 @override final  AuthStore store;
  final  String message;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $LoginSuccessCopyWith<LoginSuccess> get copyWith => _$LoginSuccessCopyWithImpl<LoginSuccess>(this, _$identity);
@@ -536,8 +556,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $LoginSuccessCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
   factory $LoginSuccessCopyWith(LoginSuccess value, $Res Function(LoginSuccess) _then) = _$LoginSuccessCopyWithImpl;
 @override @useResult
@@ -549,16 +567,12 @@ $Res call({
 @override $AuthStoreCopyWith<$Res> get store;
 
 }
-/// @nodoc
 class _$LoginSuccessCopyWithImpl<$Res>
     implements $LoginSuccessCopyWith<$Res> {
   _$LoginSuccessCopyWithImpl(this._self, this._then);
 
   final LoginSuccess _self;
   final $Res Function(LoginSuccess) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? store = null,Object? message = null,}) {
   return _then(LoginSuccess(
 store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
@@ -566,9 +580,6 @@ as AuthStore,message: null == message ? _self.message : message // ignore: cast_
 as String,
   ));
 }
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<$Res> get store {
@@ -579,8 +590,6 @@ $AuthStoreCopyWith<$Res> get store {
 }
 }
 
-/// @nodoc
-
 
 class SignUpSuccess implements AuthState {
   const SignUpSuccess({required this.store, required this.message});
@@ -588,9 +597,6 @@ class SignUpSuccess implements AuthState {
 
 @override final  AuthStore store;
  final  String message;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $SignUpSuccessCopyWith<SignUpSuccess> get copyWith => _$SignUpSuccessCopyWithImpl<SignUpSuccess>(this, _$identity);
@@ -613,8 +619,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $SignUpSuccessCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
   factory $SignUpSuccessCopyWith(SignUpSuccess value, $Res Function(SignUpSuccess) _then) = _$SignUpSuccessCopyWithImpl;
 @override @useResult
@@ -626,16 +630,12 @@ $Res call({
 @override $AuthStoreCopyWith<$Res> get store;
 
 }
-/// @nodoc
 class _$SignUpSuccessCopyWithImpl<$Res>
     implements $SignUpSuccessCopyWith<$Res> {
   _$SignUpSuccessCopyWithImpl(this._self, this._then);
 
   final SignUpSuccess _self;
   final $Res Function(SignUpSuccess) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? store = null,Object? message = null,}) {
   return _then(SignUpSuccess(
 store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
@@ -643,9 +643,6 @@ as AuthStore,message: null == message ? _self.message : message // ignore: cast_
 as String,
   ));
 }
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<$Res> get store {
@@ -656,8 +653,6 @@ $AuthStoreCopyWith<$Res> get store {
 }
 }
 
-/// @nodoc
-
 
 class LogOutSuccess implements AuthState {
   const LogOutSuccess({required this.store, required this.message});
@@ -665,9 +660,6 @@ class LogOutSuccess implements AuthState {
 
 @override final  AuthStore store;
  final  String message;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $LogOutSuccessCopyWith<LogOutSuccess> get copyWith => _$LogOutSuccessCopyWithImpl<LogOutSuccess>(this, _$identity);
@@ -690,8 +682,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $LogOutSuccessCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
   factory $LogOutSuccessCopyWith(LogOutSuccess value, $Res Function(LogOutSuccess) _then) = _$LogOutSuccessCopyWithImpl;
 @override @useResult
@@ -703,16 +693,12 @@ $Res call({
 @override $AuthStoreCopyWith<$Res> get store;
 
 }
-/// @nodoc
 class _$LogOutSuccessCopyWithImpl<$Res>
     implements $LogOutSuccessCopyWith<$Res> {
   _$LogOutSuccessCopyWithImpl(this._self, this._then);
 
   final LogOutSuccess _self;
   final $Res Function(LogOutSuccess) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? store = null,Object? message = null,}) {
   return _then(LogOutSuccess(
 store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
@@ -720,9 +706,6 @@ as AuthStore,message: null == message ? _self.message : message // ignore: cast_
 as String,
   ));
 }
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<$Res> get store {
@@ -733,8 +716,6 @@ $AuthStoreCopyWith<$Res> get store {
 }
 }
 
-/// @nodoc
-
 
 class AuthError implements AuthState {
   const AuthError({required this.store, required this.error});
@@ -742,9 +723,6 @@ class AuthError implements AuthState {
 
 @override final  AuthStore store;
  final  String error;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $AuthErrorCopyWith<AuthError> get copyWith => _$AuthErrorCopyWithImpl<AuthError>(this, _$identity);
@@ -767,8 +745,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $AuthErrorCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
   factory $AuthErrorCopyWith(AuthError value, $Res Function(AuthError) _then) = _$AuthErrorCopyWithImpl;
 @override @useResult
@@ -780,16 +756,12 @@ $Res call({
 @override $AuthStoreCopyWith<$Res> get store;
 
 }
-/// @nodoc
 class _$AuthErrorCopyWithImpl<$Res>
     implements $AuthErrorCopyWith<$Res> {
   _$AuthErrorCopyWithImpl(this._self, this._then);
 
   final AuthError _self;
   final $Res Function(AuthError) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? store = null,Object? error = null,}) {
   return _then(AuthError(
 store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
@@ -797,9 +769,6 @@ as AuthStore,error: null == error ? _self.error : error // ignore: cast_nullable
 as String,
   ));
 }
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<$Res> get store {
@@ -809,13 +778,9 @@ $AuthStoreCopyWith<$Res> get store {
   });
 }
 }
-
-/// @nodoc
 mixin _$AuthStore {
 
  bool get isLoading; String get loginEmail; String get loginPassword; String get signUpName; String get signUpEmail; String get signUpPassword; String get signUpGender; DateTime? get signUpDob; String? get signUpProfilePath;
-/// Create a copy of AuthStore
-/// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $AuthStoreCopyWith<AuthStore> get copyWith => _$AuthStoreCopyWithImpl<AuthStore>(this as AuthStore, _$identity);
@@ -838,8 +803,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class $AuthStoreCopyWith<$Res>  {
   factory $AuthStoreCopyWith(AuthStore value, $Res Function(AuthStore) _then) = _$AuthStoreCopyWithImpl;
 @useResult
@@ -851,16 +814,12 @@ $Res call({
 
 
 }
-/// @nodoc
 class _$AuthStoreCopyWithImpl<$Res>
     implements $AuthStoreCopyWith<$Res> {
   _$AuthStoreCopyWithImpl(this._self, this._then);
 
   final AuthStore _self;
   final $Res Function(AuthStore) _then;
-
-/// Create a copy of AuthStore
-/// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? loginEmail = null,Object? loginPassword = null,Object? signUpName = null,Object? signUpEmail = null,Object? signUpPassword = null,Object? signUpGender = null,Object? signUpDob = freezed,Object? signUpProfilePath = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
@@ -879,9 +838,6 @@ as String?,
 }
 
 
-/// @nodoc
-
-
 class _AuthStore implements AuthStore {
   const _AuthStore({this.isLoading = false, this.loginEmail = '', this.loginPassword = '', this.signUpName = '', this.signUpEmail = '', this.signUpPassword = '', this.signUpGender = '', this.signUpDob = null, this.signUpProfilePath = null});
   
@@ -895,9 +851,6 @@ class _AuthStore implements AuthStore {
 @override@JsonKey() final  String signUpGender;
 @override@JsonKey() final  DateTime? signUpDob;
 @override@JsonKey() final  String? signUpProfilePath;
-
-/// Create a copy of AuthStore
-/// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$AuthStoreCopyWith<_AuthStore> get copyWith => __$AuthStoreCopyWithImpl<_AuthStore>(this, _$identity);
@@ -920,8 +873,6 @@ String toString() {
 
 
 }
-
-/// @nodoc
 abstract mixin class _$AuthStoreCopyWith<$Res> implements $AuthStoreCopyWith<$Res> {
   factory _$AuthStoreCopyWith(_AuthStore value, $Res Function(_AuthStore) _then) = __$AuthStoreCopyWithImpl;
 @override @useResult
@@ -933,16 +884,12 @@ $Res call({
 
 
 }
-/// @nodoc
 class __$AuthStoreCopyWithImpl<$Res>
     implements _$AuthStoreCopyWith<$Res> {
   __$AuthStoreCopyWithImpl(this._self, this._then);
 
   final _AuthStore _self;
   final $Res Function(_AuthStore) _then;
-
-/// Create a copy of AuthStore
-/// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? loginEmail = null,Object? loginPassword = null,Object? signUpName = null,Object? signUpEmail = null,Object? signUpPassword = null,Object? signUpGender = null,Object? signUpDob = freezed,Object? signUpProfilePath = freezed,}) {
   return _then(_AuthStore(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
@@ -960,5 +907,3 @@ as String?,
 
 
 }
-
-// dart format on
